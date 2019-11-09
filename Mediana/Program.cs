@@ -64,7 +64,16 @@ namespace Mediana
                 g.DrawImage(BigScreen, 0, 0, 1, 1);
             }
 
-            ledGroup.Brush = new SolidColorBrush(new RGB.NET.Core.Color(SmallScreen.GetPixel(0, 0).R, SmallScreen.GetPixel(0, 0).G, SmallScreen.GetPixel(0, 0).B));
+            // Get the color of the squeezed pixel
+            System.Drawing.Color pixel = SmallScreen.GetPixel(0, 0);
+
+            // Scale the color so that one of the base colors value is always 255
+            byte max = Math.Max(pixel.R, Math.Max(pixel.G, pixel.B));
+            double scale = 255.0 / max;
+            RGB.NET.Core.Color color = new RGB.NET.Core.Color((byte)(scale * pixel.R), (byte)(scale * pixel.G), (byte)(scale * pixel.B));
+
+            // Assign the color to all the LEDs in your ledGroup
+            ledGroup.Brush = new SolidColorBrush(color);         
         }
 
         static void UpdateLeds()
